@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat_Alternates } from "next/font/google";
 import "./globals.css";
+import { Header } from "@/components/shared/header";
 
 const monserat = Montserrat_Alternates({
   subsets: ['cyrillic'],
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={monserat.className}>
           <main className="min-h-screen">
+            <Header/>
           {children}
           </main>
         </body>
