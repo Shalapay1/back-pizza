@@ -45,7 +45,14 @@ export const Filters: React.FC<Props> = ({ className }) => {
                 {value: '3', text: 'Cheese'},
                 {value: '4', text: 'Meat'},
                 {value: '5', text: 'Lettuce'},
-                {value: '6', text: 'Onion'}]}
+                {value: '6', text: 'Onion'},
+                {value: '7', text: 'Water'},
+                {value: '8', text: 'Milk'},
+                {value: '9', text: 'Egg'},
+                {value: '10', text: 'Sour cream'},
+                {value: '11', text: 'Salt'},
+                {value: '12', text: 'Pepper'},
+            ]}
             />
     </div>
     );
