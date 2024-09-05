@@ -8,12 +8,24 @@ datasource db {
     directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
+
+
 model User {
     id      Int @id @default(autoincrement())
 
     fullName    String
-    email       String
+    email       String @unique
     password    String
+    role        UserRole @default(User)
+
+    provider    String?
+    providerId  String?
+
+    bucket      Carz?
+    
+    order       Order[]
+    veriCode    VerificationCode?
+    
 
     createdAt   DateTime @default(now())
     updateAt    DateTime @updatedAt    
@@ -25,6 +37,130 @@ model Item{
     name        String
     imageUrl    String
 
+    ingridients Ingridient[]
+    variants    OneItem[]
+
+    category    Category @relation(fields: [categoryId], references: [id])
+    categoryId  Int
+
     createdAt   DateTime @default(now())
     updateAt    DateTime @updatedAt   
+}
+
+model OneItem{
+    id      Int @id @default(autoincrement())
+
+    price   Int
+    size    Int?
+    type    Int?
+
+    cartItem CarzItem[]
+
+    product Item @relation(fields: [productId], references: [id])
+    productId   Int
+}
+
+model Category {
+    id      Int @id @default(autoincrement())
+    name    String @unique
+    product Item[]
+
+}
+
+model Ingridient {
+    id          Int @id @default(autoincrement())
+
+    name        String
+    price       Int
+    imageUrl    String
+
+    products    Item[]
+    cartItem    CarzItem[]
+
+    createdAt   DateTime @default(now())
+    updateAt    DateTime @updatedAt   
+}
+
+model Carz {
+    id          Int @id @default(autoincrement())
+    
+    user        User? @relation(fields: [userId], references: [id])
+    userId      Int? @unique
+
+    items       CarzItem[]
+
+    token       String
+
+    totalAmou   Int @default(0)
+    
+    createdAt   DateTime @default(now())
+    updateAt    DateTime @updatedAt   
+}
+
+model CarzItem {
+    id          Int @id @default(autoincrement())
+    
+    oneItem     OneItem @relation(fields: [oneItemID], references: [id])
+    oneItemID   Int
+
+    cart        Carz @relation(fields: [cartID], references: [id])
+    cartID      Int
+
+    quantity    Int 
+    // ItemSize    Int?
+    //ItemType    Int? 
+
+    ingredients  Ingridient[]
+
+    createdAt   DateTime @default(now())
+    updateAt    DateTime @updatedAt   
+
+}
+
+model Order {
+    id          Int @id @default(autoincrement())
+    
+    user        User? @relation(fields: [userId], references: [id])
+    userId      Int?
+
+    token       String
+
+    totalAmou   Int
+    status      OrderStat
+    payId       String?
+
+    itemsList   Json
+
+    fullName    String
+    email       String
+    address     String
+    phone       String
+    comment     String?
+
+    createdAt   DateTime @default(now())
+    updateAt    DateTime @updatedAt
+}
+
+model VerificationCode {
+    id          Int @id @default(autoincrement())
+
+    user        User @relation(fields: [userId], references: [id])
+    userId      Int @unique
+    
+    code        String
+
+    createdAt   DateTime @default(now())
+
+    @@unique([userId, code])
+}
+
+enum OrderStat {
+    PENDING
+    SUCCEEDED
+    CACELLED
+}
+
+enum UserRole{
+    User
+    Admin
 }
